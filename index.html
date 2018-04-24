@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="https://www.stellar.org/wp-content/themes/stellar/favicon/rocket-96x96.png" sizes="96x96">
+  <title>Stellar Verify Message</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+    crossorigin="anonymous">
+  <link href="custom.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+  <script src="https://wzrd.in/standalone/buffer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"></script>
+  
+</head>
+
+<body>
+  <div class="container mt-5 mb-5">
+    <h1>Stellar Verify Message</h1>
+    <form class="mt-5">
+      <div class="form-group">
+        <label for="address">Stellar Address</label>
+        <input type="text" class="form-control" id="address" required="required" placeholder="GDUIG7OB4RZTBJHCZ3ZGMNAUSNYHBZENS5XHMBHJZBGDBIR4MCNUXZCI">
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea class="form-control" id="message" required="required" placeholder="Hello, Stellar!" rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="signature">Signature</label>
+        <input type="text" class="form-control" id="signature" required="required" placeholder="WstITQxROg8aB5bbVo4/Tm9U8IfPBbobXXtmzUev6cJ5DQvMA3zPDlkvex5vi/mNKywma9kLPU9n/JlQ4hHXCg==">
+      </div>
+      <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+  </div>
+
+
+  <script>
+    $(document).ready(function () {
+      $("form").submit(function (event) {
+        const address = $("#address").val();
+        const message = $("#message").val();
+        const signature = $("#signature").val();
+        signature_buffer = buffer.Buffer.from(signature, 'base64');
+        let result = false;
+        try {
+          result = StellarSdk.Keypair.fromPublicKey(address).verify(message, signature_buffer);
+        }
+        catch (err) {
+          console.log(err);
+        }
+
+        if (result) {
+          $("#address, #message, #signature").removeClass().addClass("form-control is-valid");
+          $("button").removeClass().addClass("btn btn-success").html("Success");
+        } else {
+          $("#address, #message, #signature").removeClass().addClass("form-control is-invalid");
+          $("button").removeClass().addClass("btn btn-danger").html("Failed");
+        }
+        return false;
+      })
+    })
+  </script>
+</body>
+
+</html>
